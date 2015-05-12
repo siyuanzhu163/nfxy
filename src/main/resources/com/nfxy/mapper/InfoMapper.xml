@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nfxy.mapper.InfoMapper">
+    
+    <insert id="insert" parameterType="Info">
+        INSERT INTO t_info (
+            FPart,
+            FType,
+		    FTitle,
+		    FAuthor,
+		    FCover,
+		    FSummary,
+		    FContent,
+		    FStatus,
+		    FCreateTime,
+		    FKCreateBy,
+		    FUpdateTime,
+		    FKUpdateBy
+		)
+		VALUES
+		    (
+		        #{part},
+		        #{type},
+		        #{title},
+		        #{author},
+		        #{cover},
+		        #{summary},
+		        #{content},
+		        #{status},
+		        NOW(),
+		        #{createBy.id},
+		        NOW(),
+		        #{updateBy.id}
+		    )
+    </insert>
+    
+    <update id="update" parameterType="Info">
+		UPDATE t_info i
+		SET i.FPart = #{part},
+		 i.FType = #{type},
+		 i.FTitle = #{title},
+		 i.FAuthor = #{author},   
+		 i.FCover = #{cover},
+		 i.FSummary = #{summary},
+		 i.FContent = #{content},
+		 i.FStatus = #{status},
+		 i.FUpdateTime = NOW(),
+		 i.FKUpdateBy = #{updateBy.id}
+		WHERE
+		    i.FID = #{id}
+    </update>
+    
+    <update id="updateStatus" parameterType="map">
+        UPDATE t_info i
+        SET i.FStatus = #{status},
+         i.FUpdateTime = NOW(),
+         i.FKUpdateBy = #{updateBy.id}
+        WHERE
+            i.FID = #{id}
+    </update>
+    
+    <update id="viewStatistic" parameterType="long">
+        UPDATE t_info i SET i.FViewedCount = i.FViewedCount + 1 WHERE i.FID = #{id}
+    </update>
+    
+    <update id="shareStatistic" parameterType="long">
+        UPDATE t_info i SET i.FSharedCount = i.FSharedCount + 1 WHERE i.FID = #{id}
+    </update>
+    
+    <select id="getById" parameterType="long" resultType="Info">
+		SELECT
+		    i.FID id,
+		    i.FPart part,
+		    i.FType type,
+		    i.FTitle title,
+		    i.FAuthor author,
+		    i.FCover cover,
+		    i.FSummary summary,
+		    i.FContent content,
+            i.FStatus status
+		FROM
+		    t_info i
+		WHERE
+		    i.FID = #{id}
+    </select>
+    
+    <select id="query" parameterType="map" resultType="Info">
+		SELECT
+		    i.FID id,
+		    i.FTitle title,
+		    i.FAuthor author,
+		    i.FCover cover,
+		    i.FSummary summary,
+		    i.FViewedCount viewedCount,
+            i.FSharedCount sharedCount,
+		    i.FCreateTime createTime
+		FROM
+		    t_info i
+		<where>
+		    <if test="status != null">
+		    i.FStatus = #{status}
+		    </if>
+		<if test="part != null">
+		AND i.FPart = #{part}
+		</if>
+		<if test="keyword != null">
+        AND (i.FAuthor LIKE CONCAT('%', #{keyword}, '%') 
+            OR i.FTitle LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+		<if test="createTime != null">
+		AND i.FCreateTime <![CDATA[ <= ]]> #{lastCreateTime}
+		</if>
+		<if test="id != null">
+		AND i.FID <![CDATA[ < ]]> #{lastId}
+		</if>
+		</where>
+		ORDER BY
+		    i.FCreateTime DESC,
+		    i.FID DESC
+    </select>
+    
+    
+    <select id="queryStatistic" parameterType="map" resultType="Info">
+		SELECT
+		    i.FID id,
+		    i.FTitle title,
+		    i.FCreateTime createTime,
+		    i.FViewedCount viewedCount,
+		    i.FSharedCount sharedCount
+		FROM
+		    t_info i
+		WHERE
+		    i.FPart = #{part}
+		ORDER BY
+		    i.FViewedCount DESC,
+		    i.FSharedCount DESC
+    </select>
+    
+</mapper>

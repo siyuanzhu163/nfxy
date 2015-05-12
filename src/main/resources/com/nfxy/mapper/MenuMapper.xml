@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nfxy.mapper.MenuMapper">
+    
+    <select id="getAll" resultType="Menu">
+		SELECT
+		    m.FID id,
+		    m.FName name,
+		    m.FServletPath servletPath,
+		    m.FOrder "order"
+		FROM
+		    t_menu m
+		ORDER BY
+		    m.FOrder
+    </select>
+    
+</mapper>

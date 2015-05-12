@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nfxy.mapper.ManagerMapper">
+    
+    <resultMap id="fullManager" type="Manager">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="createTime" column="createTime"/>
+        <result property="status" column="status"/>
+        <collection property="menus" column="id" select="getMenus"/>
+    </resultMap>
+    
+    <select id="getByNamePwd" parameterType="map" resultMap="fullManager">
+		SELECT
+		    m.FID id,
+		    m.FName name,
+		    m.FPassword password,
+		    m.FCreateTime createTime,
+		    m.FStatus status
+		FROM
+		    t_manager m
+		WHERE
+		    m.FName = #{name}
+		AND m.FPassword = #{password}
+		AND m.FStatus = 'ENABLED'
+    </select>
+    
+    <select id="getById" parameterType="string" resultMap="fullManager">
+        SELECT
+            m.FID id,
+            m.FName name,
+            m.FPassword password,
+            m.FCreateTime createTime,
+            m.FStatus status
+        FROM
+            t_manager m
+        WHERE
+            m.FID = #{id}
+    </select>
+    
+    <select id="getMenus" parameterType="string" resultType="Menu">
+		SELECT
+		    m.FID id,
+		    m.FName NAME,
+		    m.FServletPath servletPath
+		FROM
+		    t_menu m,
+		    t_manager_menu mm
+		WHERE
+		    m.FID = mm.FKMenuID
+		AND mm.FKManagerID = #{id}
+		ORDER BY m.FOrder
+    </select>
+    
+    <select id="exist" parameterType="string" resultType="boolean">
+        SELECT
+            COUNT(1)
+        FROM
+            t_manager m
+        WHERE
+            m.FName = #{name}
+    </select>
+    
+    <select id="validate" parameterType="map" resultType="boolean">
+        SELECT
+            COUNT(1)
+        FROM
+            t_manager m
+        WHERE
+            m.FName = #{name}
+        AND m.FPassword = #{password}
+        AND m.FStatus = 'ENABLED'
+    </select>
+    
+    <update id="updatePassword" parameterType="map">
+		UPDATE t_manager m
+		SET m.FPassword = #{password}
+		WHERE
+		    m.FName = #{name}
+    </update>
+    
+    <insert id="insert" parameterType="Manager">
+		INSERT INTO t_manager(FID, FName, FPassword, FCreateTime, FStatus)
+		VALUES(#{id}, #{name}, #{password}, NOW(), #{status})
+    </insert>
+    
+    <insert id="insertManagerMenus" parameterType="Manager">
+        INSERT INTO t_manager_menu(FID, FKManagerID, FKMenuID)
+        VALUES 
+        <foreach collection="menus" item="menu" separator=",">
+            (UUID(), #{id}, #{menu.id})
+        </foreach>
+    </insert>
+    
+    <insert id="deleteManagerMenus" parameterType="Manager">
+        DELETE FROM t_manager_menu WHERE FKManagerID = #{id}
+    </insert>
+    
+    <select id="query" parameterType="map" resultType="Manager">
+		SELECT
+		    m.FID id,
+		    m.FName NAME,
+		    m.FCreateTime createTime,
+		    m.FStatus STATUS
+		FROM
+		    t_manager m
+		<where>
+		<if test="keyword != null">
+		    m.FName LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		</where>
+		ORDER BY
+		    m.FCreateTime DESC
+    </select>
+    
+    <update id="updateStatus">
+        UPDATE t_manager m SET m.FStatus = #{status} WHERE m.FID = #{id}
+    </update>
+    
+</mapper>

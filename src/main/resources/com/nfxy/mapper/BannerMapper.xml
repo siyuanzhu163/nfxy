@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nfxy.mapper.BannerMapper">
+    
+    <insert id="insert" parameterType="Banner">
+		INSERT INTO t_banner (
+		    FPart,
+		    FTitle,
+		    FPicture,
+		    FSummary,
+		    FKInfoID,
+		    FURL,
+		    FWeight,
+		    FStatus,
+		    FCreateTime,
+		    FKCreateBy,
+		    FUpdateTime,
+		    FKUpdateBy
+		)
+		VALUES
+		    (
+		        #{part},
+		        #{title},
+		        #{picture},
+		        #{summary},
+		        #{info.id},
+		        #{url},
+		        #{weight},
+		        #{status},
+		        NOW(),
+		        #{createBy.id},
+		        NOW(),
+		        #{updateBy.id}
+		    )
+    </insert>
+    
+    <update id="update" parameterType="Banner">
+		UPDATE t_banner b
+		SET b.FPart = #{part},
+		 b.FTitle = #{title},
+		 b.FPicture = #{picture},
+		 b.FSummary = #{summary},
+		 b.FKInfoID = #{info.id},
+		 b.FURL = #{url},
+		 b.FWeight = #{weight},
+		 b.FStatus = #{status},
+		 b.FUpdateTime = NOW(),
+		 b.FKUpdateBy = #{updateBy.id}
+		WHERE
+		    b.FID = #{id}
+    </update>
+    
+    <update id="updateStatus" parameterType="map">
+		UPDATE t_banner b
+		SET b.FStatus = #{status},
+		 b.FUpdateTime = NOW(),
+		 b.FKUpdateBy = #{updateBy.id}
+		WHERE
+		    b.FID = #{id}
+    </update>
+    
+    <update id="viewStatistic" parameterType="long">
+        UPDATE t_banner b SET b.FViewedCount = b.FViewedCount + 1 WHERE b.FID = #{id}
+    </update>
+    
+    <update id="shareStatistic" parameterType="long">
+        UPDATE t_banner b SET b.FSharedCount = b.FSharedCount + 1 WHERE b.FID = #{id}
+    </update>
+    
+    <select id="getById" parameterType="long" resultType="Banner">
+		SELECT
+		    b.FID id,
+		    b.FPart part,
+		    b.FTitle title,
+		    b.FPicture picture,
+		    b.FSummary summary,
+		    i.FID "info.id",
+		    i.FTitle "info.title",
+		    b.FURL url,
+		    b.FWeight weight,
+		    b.FStatus status
+		FROM
+		    t_banner b
+		    LEFT JOIN t_info i ON b.FKInfoID = i.FID
+		WHERE
+		    b.FID = #{id}
+    </select>
+    
+    <select id="query" parameterType="map" resultType="Banner">
+		SELECT
+		    b.FID id,
+		    b.FPart part,
+		    b.FTitle title,
+		    b.FPicture picture,
+		    b.FSummary summary,
+		    b.FID "info.id",
+		    b.FURL url,
+		    b.FWeight weight,
+		    b.FStatus status,
+		    b.FCreateTime createTime
+		FROM
+		    t_banner b
+		<where>
+	    <if test="status != null">
+	       b.FStatus = #{status}
+	    </if>
+	    <if test="part != null">
+		AND b.FPart = #{part}
+	    </if>
+	    <if test="keyword != null">
+        AND b.FTitle LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+		</where>
+		ORDER BY
+		    b.FWeight DESC,
+		    b.FCreateTime DESC
+    </select>
+    
+    <select id="queryStatistic" parameterType="map" resultType="Banner">
+		SELECT
+		    b.FID id,
+		    b.FTitle title,
+		    b.FCreateTime createTime,
+		    b.FViewedCount viewedCount,
+		    b.FSharedCount sharedCount
+		FROM
+		    t_banner b
+		WHERE
+		    b.FPart = #{part}
+		ORDER BY
+		    b.FViewedCount DESC
+    </select>
+    
+</mapper>

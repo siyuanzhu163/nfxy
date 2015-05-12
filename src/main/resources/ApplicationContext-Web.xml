@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    
+    <bean id="multipartResolver"
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <property name="maxInMemorySize" value="1048576"/><!-- 1M -->
+	    <property name="maxUploadSize" value="10485760"/><!-- 10M -->
+	</bean>
+    
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+   
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="viewClass" value="com.nfxy.manager.FreeMarkerViewExt"/>
+		<property name="cache" value="true" />
+		<property name="prefix" value="/WEB-INF/views" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+	</bean>
+    
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="features">
+					<array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
+						<value>DisableCircularReferenceDetect</value>
+					</array>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>      
+    
+    <mvc:interceptors>
+        <bean class="com.nfxy.manager.interceptor.RequestContextInterceptor"/>
+        <bean class="com.nfxy.manager.interceptor.AccessLogInterceptor"/>
+        <mvc:interceptor>
+            <!-- * 和 ** 不一样 -->
+            <mvc:mapping path="/manager/**"/>
+            <bean class="com.nfxy.manager.interceptor.AccessControlInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+         
+</beans>
