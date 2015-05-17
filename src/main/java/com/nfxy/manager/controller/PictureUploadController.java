@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nfxy.exception.IllegalImgException;
 import com.nfxy.manager.AJAXResponse;
+import com.nfxy.manager.upload.IMGAttr;
+import com.nfxy.manager.upload.PictureTypeEnum;
 import com.nfxy.service.PictureService;
 import com.nfxy.util.UUIDUtils;
-import com.siyuan.manager.upload.IMGAttr;
-import com.siyuan.manager.upload.PictureTypeEnum;
 
 /**
  * 图片上传

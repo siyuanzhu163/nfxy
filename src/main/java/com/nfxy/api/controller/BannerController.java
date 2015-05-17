@@ -62,7 +62,7 @@ public class BannerController extends BaseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("/{part}/{id}/view")
+	@RequestMapping("/{id}/view")
 	public AJAXResponse<String> view(@PathVariable("part") String part,
 			@PathVariable("id") long id) {
 		validatePart(part);
@@ -75,7 +75,7 @@ public class BannerController extends BaseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("/{part}/{id}/share")
+	@RequestMapping("/{id}/share")
 	public AJAXResponse<String> share(@PathVariable("part") String part,
 			@PathVariable("id") long id) {
 		validatePart(part);

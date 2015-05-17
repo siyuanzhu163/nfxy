@@ -1,4 +1,4 @@
-package com.siyuan.manager.upload;
+package com.nfxy.manager.upload;
 
 import java.io.Serializable;
 

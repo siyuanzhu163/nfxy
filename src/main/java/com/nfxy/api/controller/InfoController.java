@@ -46,8 +46,8 @@ public class InfoController extends BaseController {
 	@RequestMapping("")
 	public AJAXResponse<String> query(@PathVariable("part") String part,
 			@Param("lastCreateTime") Date lastCreateTime,
-			@Param("lastId") long lastId, 
-			@Param("pageSize") int pageSize) {
+			@Param("lastId") Long lastId, 
+			@Param("pageSize") Integer pageSize) {
 		PartEnum partVal = validatePart(part);
 		
 		AJAXResponse<String> result = new AJAXResponse<String>();
@@ -58,7 +58,7 @@ public class InfoController extends BaseController {
 		criteria.put("lastCreateTime", lastCreateTime);
 		criteria.put("lastId", lastId);
 		
-		PageBounds page = new PageBounds(1, pageSize == 0 ? 10 : pageSize);
+		PageBounds page = new PageBounds(1, pageSize == null ? 10 : pageSize);
 		List<Info> infos = infoService.query(criteria, page);
 		
 		String infosJSON = JSON.toJSONString(infos, 
