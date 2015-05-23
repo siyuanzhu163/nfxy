@@ -1,6 +1,7 @@
 package com.nfxy.manager;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializeFilter;
 
 /**
  * AJAX响应格式
@@ -21,6 +22,9 @@ public class AJAXResponse<T> {
 	
 	@JSONField(ordinal=2)
 	private T content;
+	
+	@JSONField(serialize=false)
+	private SerializeFilter[] serializeFilters;
 	
 	public AJAXResponse() {
 		
@@ -48,6 +52,14 @@ public class AJAXResponse<T> {
 
 	public void setContent(T content) {
 		this.content = content;
+	}
+
+	public SerializeFilter[] getSerializeFilters() {
+		return serializeFilters;
+	}
+
+	public void setSerializeFilters(SerializeFilter[] serializeFilters) {
+		this.serializeFilters = serializeFilters;
 	}
 	
 }
