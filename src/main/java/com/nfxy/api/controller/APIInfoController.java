@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,7 +71,7 @@ public class APIInfoController extends APIBaseController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("/{id}")
+	@RequestMapping("/{id}/metadata")
 	public AJAXResponse<Info> detail(@PathVariable("part") String part,
 			@PathVariable("id") long id) {
 		validatePart(part);
@@ -79,6 +80,29 @@ public class APIInfoController extends APIBaseController {
 		result.setContent(infoService.view(id));
 		result.setSerializeFilters(new SerializeFilter[]{
 				new SimplePropertyPreFilter(Info.class, APIPropertyConstant.INFO_DETAIL)});
+		return result;
+	}
+	
+	/**
+	 * 获取资讯详情
+	 * @param id 资讯id
+	 * @return
+	 */
+	@RequestMapping("/{id}")
+	public String content(@PathVariable("part") String part,
+			@PathVariable("id") long id, ModelMap model) {
+		String result = "";
+		
+		try {
+			validatePart(part);
+			Info info = infoService.view(id);
+			model.put("part", part);
+			model.put("info", info);
+			result = (info == null) ? "" : "/api/info";
+		} catch (Exception e) {
+			result = "";
+		}
+		
 		return result;
 	}
 	

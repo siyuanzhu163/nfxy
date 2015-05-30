@@ -79,7 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    i.FCover cover,
 		    i.FSummary summary,
 		    i.FContent content,
-            i.FStatus status
+            i.FStatus status,
+            i.FCreateTime createTime
 		FROM
 		    t_info i
 		WHERE

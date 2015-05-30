@@ -20,6 +20,6 @@ public class APIPropertyConstant {
 	
 	/** 详情 */
 	public static String[] INFO_DETAIL = new String[] { "id", "title", "author",
-		"createTime","content", "viewedCount", "sharedCount" };
+		"createTime", "viewedCount", "sharedCount" };
 	
 }
