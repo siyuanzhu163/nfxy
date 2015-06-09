@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <meta content="yes"name="apple-mobile-web-app-capable"/>
   <meta content="black"name="apple-mobile-web-app-status-bar-style"/>
   <meta name="format-detection"content="telphone=no"/>
@@ -12,10 +12,6 @@
   <link rel="stylesheet" href="${(ContextPath)!''}/api/css/article.css">
 </head>
 <body>
-  <header class="header">
-    <h1 class="article_title" style="text-transform:Capitalize">${part!''}</h1>
-  </header>
-
   <div class="wrap-page">
     <img class="article_banner" src="${(info.cover)!''}" alt="封面">
     <div class="page">
